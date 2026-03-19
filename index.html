@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>for my parents 🤍</title>
+
+<style>
+body{
+margin:0;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:linear-gradient(-45deg,#e6e6e6,#ffffff,#f0f0f0,#dcdcdc);
+background-size:400% 400%;
+animation:bg 15s ease infinite;
+color:#222;
+overflow-x:hidden;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.center{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+opacity:0;
+transform:translateY(20px);
+transition:1.2s;
+}
+.center.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.box{
+background:white;
+width:95%;
+max-width:520px;
+border-radius:30px;
+padding:30px;
+text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+button{
+margin-top:15px;
+padding:10px 22px;
+border:none;
+border-radius:25px;
+background:#444;
+color:white;
+cursor:pointer;
+}
+
+.preserve{
+white-space:pre-wrap;
+line-height:1.6;
+}
+
+.word{
+opacity:0;
+transition:1.2s;
+}
+
+img{
+width:90%;
+max-width:320px;
+border-radius:20px;
+margin-bottom:15px;
+}
+
+#slides{
+height:100vh;
+overflow-y:auto;
+scroll-snap-type:y mandatory;
+}
+
+.slide{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:30px;
+scroll-snap-align:start;
+opacity:0;
+transform:translateY(20px);
+transition:1.2s;
+}
+.slide.show{
+opacity:1;
+transform:translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<div id="main"></div>
+
+<script>
+const main=document.getElementById("main");
+
+function animateWords(el,speed=220,callback=null){
+const text=el.innerHTML.trim();
+el.innerHTML="";
+el.style.visibility="visible";
+
+const words=text.split(" ");
+words.forEach((w,i)=>{
+const span=document.createElement("span");
+span.textContent=w+" ";
+span.classList.add("word");
+el.appendChild(span);
+setTimeout(()=>span.style.opacity=1,i*speed);
+});
+
+if(callback){
+setTimeout(callback,words.length*speed+800);
+}
+}
+
+function setPage(content){
+main.innerHTML=content;
+setTimeout(()=>main.firstElementChild.classList.add("show"),50);
+}
+
+/* FIRST PAGE */
+setPage(`
+<div class="center">
+<div class="box">
+<h2>for the two people who mean everything 🤍</h2>
+<p>may i show you something i made?</p>
+<button onclick="start()">yes</button>
+</div>
+</div>
+`);
+
+function start(){
+setPage(`
+<div class="center">
+<div class="box preserve">
+<p>
+Before you go ahead, just pause for a moment —
+because what you’re about to see
+is made with love, gratitude, and everything I feel but don’t always say.
+</p>
+<button onclick="poem()">next</button>
+</div>
+</div>
+`);
+}
+
+function poem(){
+setPage(`
+<div class="center">
+<div class="box preserve">
+<p id="poem" style="visibility:hidden;">
+In the quiet rhythm of my life,
+there have always been two steady hearts —
+guiding, protecting, and shaping me.
+
+In every small moment I grew,
+you were there,
+not asking for anything,
+yet giving everything.
+
+You are the reason I stand today,
+stronger, wiser, and kinder.
+And no matter how far I go,
+I carry your love with me, always.
+</p>
+<button id="nextBtn" style="opacity:0" onclick="slides()">next</button>
+</div>
+</div>
+`);
+
+animateWords(document.getElementById("poem"),220,()=>{
+document.getElementById("nextBtn").style.opacity=1;
+});
+}
+
+function slides(){
+main.innerHTML=`
+<div id="slides">
+
+<div class="slide">
+<img src="alone.jpg">
+<p id="p1" class="preserve" style="visibility:hidden;">
+Every memory with you feels like home.
+The smallest moments, the quiet talks,
+the laughter we share —
+they mean more than I can ever explain.
+</p>
+</div>
+
+<div class="slide">
+<img src="auto.jpg">
+<p id="p2" class="preserve" style="visibility:hidden;">
+You’ve given me more than I ever realized —
+strength when I needed it,
+support when I doubted myself,
+and love that never once felt conditional.
+</p>
+</div>
+
+<div class="slide">
+<img src="leather-jacket.jpg">
+<p id="p3" class="preserve" style="visibility:hidden;">
+No matter where life takes me,
+one thing will always remain the same —
+I will always be grateful for you,
+and I will always be yours.
+</p>
+<button id="finalBtn" style="opacity:0" onclick="finalPage()">next</button>
+</div>
+
+</div>
+`;
+
+setTimeout(()=>{
+document.querySelectorAll(".slide").forEach(s=>s.classList.add("show"));
+},50);
+
+const observer=new IntersectionObserver(entries=>{
+entries.forEach(e=>{
+if(e.isIntersecting){
+animateWords(e.target,220);
+observer.unobserve(e.target);
+
+if(e.target.id==="p3"){
+setTimeout(()=>{
+document.getElementById("finalBtn").style.opacity=1;
+},e.target.innerText.split(" ").length*220+800);
+}
+}
+});
+},{threshold:0.6});
+
+observer.observe(document.getElementById("p1"));
+observer.observe(document.getElementById("p2"));
+observer.observe(document.getElementById("p3"));
+}
+
+function finalPage(){
+setPage(`
+<div class="center">
+<div class="box preserve">
+<p id="finalText" style="visibility:hidden;">
+At the end of everything,
+I just want to say this —
+
+Thank you.
+
+For every sacrifice,
+for every silent prayer,
+for every time you put me before yourselves.
+
+I may not say it enough,
+but I truly, deeply love you.
+
+And I always will. 🤍
+</p>
+</div>
+</div>
+`);
+
+animateWords(document.getElementById("finalText"),220);
+}
+</script>
+
+</body>
+</html>
